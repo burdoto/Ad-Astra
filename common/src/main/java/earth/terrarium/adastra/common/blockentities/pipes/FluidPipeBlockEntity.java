@@ -21,7 +21,12 @@ public class FluidPipeBlockEntity extends PipeBlockEntity {
         if (pipeProperty.isNone()) return;
         var container = FluidContainer.of(entity, direction);
         if (container == null) return;
-        var toTransfer = container.getFirstFluid();
+        FluidHolder toTransfer;
+        try {
+            toTransfer = container.getFirstFluid();
+        } catch (ArrayIndexOutOfBoundsException ignored) {
+            return;
+        }
         if (!pipeProperty.isInsert() && !toTransfer.isEmpty() && (pipeProperty.isExtract() || container.extractFluid(toTransfer, true).getFluidAmount() > 0)) {
             sources.put(pos, direction);
         } else if (pipeProperty.isNormal() || pipeProperty.isInsert()) {
